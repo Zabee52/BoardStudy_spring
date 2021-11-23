@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+		  rel="stylesheet">
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="/static/images/icons/favicon.ico"/>
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/animate/animate.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/select2/select2.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/css/main.css">
+	<!--===============================================================================================-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<title>자유게시판</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="/js/modal.js"></script>
+	<link rel="stylesheet" href="/css/modal.css">
+
+</head>
+<body>
+	
+	<div class="limiter">
+		<button type="button" class="btn btn-primary" onclick="modal_show()">글 작성</button>
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver5 m-b-110">
+					<div class="table100-head">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									<th class="cell100 column1"><b>제목</b></th>
+									<th class="cell100 column2"><b>작성자</b></th>
+									<th class="cell100 column3"><b>작성일</b></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="table100-body js-pscroll">
+						<table>
+							<tbody id="board-list">
+								<tr th:each="post : ${posts}"
+									th:onclick="'loadPost('+${post.id}+')'"
+									class="row100 body">
+									<td th:text="${post.title}"
+										class="cell100 column1"></td>
+									<td th:text="${post.author}"
+										class="cell100 column2"></td>
+									<td th:text="${post.modifiedAt}"
+										class="cell100 column3"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal_wrap" class="non_show">
+		<div id="modal" class="modal-overlay">
+			<div class="modal-window">
+				<div class="title">
+					<img src="/images/posting.png" class="Title_img"/>
+					<h3>게시글 작성하기</h3>
+				</div>
+				<div class="content">
+					<input id="modal-author" type="text" class="Input" placeholder="작성자명"/>
+					<input id="modal-title" type="text" class="Input" placeholder="제목을 적어주세요"/>
+					<textarea id="modal-content" type="text" class="Content" placeholder="내용을 적어주세요"></textarea>
+					<div onclick="posting()" class="Post_btn">작성</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+<!--===============================================================================================-->	
+	<script src="../static/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="../static/vendor/bootstrap/js/popper.js"></script>
+	<script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="../static/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="../static/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+			
+		
+	</script>
+<!--===============================================================================================-->
+	<script src="/js/main.js"></script>
+</body>
+</html>
