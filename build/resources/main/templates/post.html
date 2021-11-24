@@ -57,7 +57,9 @@
                     url: `/board/comment/${commentId}`,
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert(response);
+                        if(!(response==="수정 완료")){
+                            alert(response);
+                        }
                         window.location.reload();
                     }
                 })

@@ -32,7 +32,7 @@
                 success: function (response) {
                     alert(response);
                     if (response === "회원가입 완료") {
-                        window.location.href = '/';
+                        window.location.href = '/user/login';
                     }else if(response === "중복된 닉네임입니다." ||
                              response === "닉네임은 3자 이상이어야 하며, 대소문자와 숫자로만 구성되어야 합니다."){
                         $('#nickname').focus();
