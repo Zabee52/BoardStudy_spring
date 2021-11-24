@@ -2,6 +2,7 @@ package com.sparta.assignment.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -45,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 게시판 관련 css vendor 폴더를 login 없이 허용
                 .antMatchers("/vendor/**").permitAll()
                 // 게시글 목록 및 게시글 조회는 로그인 없이 허용
-                .antMatchers("/board", "/board/post/{id}").permitAll()
+                .antMatchers("/board").permitAll()
+                .antMatchers(HttpMethod.POST, "/board/post/{id}").permitAll()
                 // 그 외 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
                 .and()

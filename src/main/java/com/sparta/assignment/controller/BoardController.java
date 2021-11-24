@@ -5,6 +5,7 @@ import com.sparta.assignment.models.Board;
 import com.sparta.assignment.models.Comment;
 import com.sparta.assignment.repository.BoardRepository;
 import com.sparta.assignment.security.UserDetailsImpl;
+import com.sparta.assignment.security.ValidCheck;
 import com.sparta.assignment.service.BoardService;
 import com.sparta.assignment.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -71,8 +72,7 @@ public class BoardController {
     @PostMapping("/board/post")
     @ResponseBody
     public Board posting(@RequestBody BoardDto boardDto) {
-        Board board = new Board(boardDto);
-        return boardRepository.save(board);
+        return boardService.posting(boardDto);
     }
 
     @Secured("ROLE_USER")

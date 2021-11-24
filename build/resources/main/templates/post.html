@@ -58,13 +58,6 @@
                     data: JSON.stringify(data),
                     success: function (response) {
                         alert(response);
-                        if(response === "앞으로 이러지 마세요... ^^"){
-                            let i = 1;
-                            while(i >= 1){
-                                alert(response);
-                                i++;
-                            }
-                        }
                         window.location.reload();
                     }
                 })
