@@ -14,6 +14,8 @@
     <title>게시글 보기</title>
     <script th:inline="javascript">
         function comment(id) {
+            commentPermission();
+
             let content = $('#comment').val();
             if (content !== '') {
                 /*<![CDATA[*/
@@ -55,6 +57,7 @@
                     url: `/board/comment/${commentId}`,
                     data: JSON.stringify(data),
                     success: function (response) {
+                        alert(response);
                         window.location.reload();
                     }
                 })
@@ -65,18 +68,29 @@
         }
 
         function commentDelete(commentId) {
-            let data = {
-                'id': commentId
-            };
-            $.ajax({
-                type: 'DELETE',
-                url: `/board/comment/${commentId}`,
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                success: function (response) {
-                    window.location.reload();
-                }
-            })
+            if (confirm("정말 삭제하시겠습니까?") === true) {    //확인
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/board/comment/${commentId}`,
+                    contentType: "application/json",
+                    success: function (response) {
+                        window.location.reload();
+                    }
+                });
+            } else {   //취소
+
+            }
+        }
+
+        function commentPermission() {
+            /*<![CDATA[*/
+            let myId = /*[[ ${myId} ]]*/null;
+            /*]]*/
+
+            if (!myId) {
+                alert("로그인이 필요한 기능입니다.");
+                window.location.href = "/user/login?needlogin";
+            }
         }
 
         function showModify(commentId) {
@@ -130,13 +144,20 @@
                 style="font-weight: bold;">제목</h5>
             <h6 th:text="${post.author}"
                 class="card-subtitle mb-2 text-muted"
-                style="text-align: right;">작성자명</h6>
+                style="text-align: right;
+                       font-weight: bold">작성자명</h6>
             <p th:text="${post.content}"
                class="card-text">내용</p>
+            <p class="card-text" style="text-align:right;">
+                <a onclick="location.href='/board'"
+                   class="btn btn-primary"
+                   style="color:white;">목록</a>
+            </p>
         </div>
     </div>
     <div class="input-group mb-3">
         <input id="comment"
+               onclick="commentPermission()"
                type="text"
                class="form-control"
                placeholder="댓글 쓰기"

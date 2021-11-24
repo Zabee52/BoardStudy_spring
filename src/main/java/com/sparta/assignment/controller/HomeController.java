@@ -9,4 +9,8 @@ public class HomeController {
     public String home(){
         return "redirect:/board";
     }
+    @GetMapping("/forbidden")
+    public String forbidden(){
+        return "redirect:/forbidden.html";
+    }
 }

@@ -29,13 +29,21 @@
 	<script src="/js/modal.js"></script>
 	<link rel="stylesheet" href="/css/modal.css">
 
+	<script>
+		const href = location.href;
+		const queryString = href.substring(href.indexOf("?")+1)
+		if (queryString === 'login') {
+			alert("이미 로그인이 되어있습니다.");
+		}
+	</script>
 </head>
 <body>
-	
 	<div class="limiter">
-		<button type="button" class="btn btn-primary" onclick="modal_show()">글 작성</button>
 		<div class="container-table100">
 			<div class="wrap-table100">
+				<button th:if="${myId>0}" type="button" class="btn btn-primary" onclick="modal_show()">글 작성</button>
+				<button th:if="${myId<=0}" type="button" class="btn btn-primary" onclick="location.href='/user/login'">로그인</button>
+				<button th:if="${myId>0}" type="button" class="btn btn-primary" onclick="location.href='/user/logout'">로그아웃</button>
 				<div class="table100 ver5 m-b-110">
 					<div class="table100-head">
 						<table>
@@ -69,7 +77,7 @@
 		</div>
 	</div>
 
-	<div id="modal_wrap" class="non_show">
+	<div th:if="${myId>0}" id="modal_wrap" class="non_show">
 		<div id="modal" class="modal-overlay">
 			<div class="modal-window">
 				<div class="title">
@@ -89,14 +97,14 @@
 
 
 <!--===============================================================================================-->	
-	<script src="../static/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
-	<script src="../static/vendor/bootstrap/js/popper.js"></script>
-	<script src="../static/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/vendor/bootstrap/js/popper.js"></script>
+	<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->
-	<script src="../static/vendor/select2/select2.min.js"></script>
+	<script src="/vendor/select2/select2.min.js"></script>
 <!--===============================================================================================-->
-	<script src="../static/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 	<script>
 		$('.js-pscroll').each(function(){
 			var ps = new PerfectScrollbar(this);

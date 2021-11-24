@@ -44,6 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/js/**").permitAll()
                 // 게시판 관련 css vendor 폴더를 login 없이 허용
                 .antMatchers("/vendor/**").permitAll()
+                // 게시글 목록 및 게시글 조회는 로그인 없이 허용
+                .antMatchers("/board", "/board/post/{id}").permitAll()
                 // 그 외 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
                 .and()
@@ -63,10 +65,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     // 로그아웃 요청 처리 URL
                     .logoutUrl("/user/logout")
+                    // 로그아웃 성공시 글 목록으로
+                    .logoutSuccessUrl("/board")
                     .permitAll()
                 .and()
                     .exceptionHandling()
                     // "접근 불가" 페이지 URL 설정
-                    .accessDeniedPage("/");
+                    .accessDeniedPage("/forbidden");
     }
 }

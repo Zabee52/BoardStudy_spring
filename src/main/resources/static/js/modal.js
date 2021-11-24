@@ -15,7 +15,7 @@ function posting() {
 
     $.ajax({
         type: "POST",
-        url: "/board",
+        url: "/board/post",
         data: JSON.stringify(data),
         contentType: "application/json",
         success: function (response) {
