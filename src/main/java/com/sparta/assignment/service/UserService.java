@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
 import java.util.Optional;
 
 @Service
@@ -27,21 +26,16 @@ public class UserService {
         // 회원가입 작업
         // return message
         String nickname = signUpRequestDto.getNickname();
+        String password = signUpRequestDto.getPassword();
 
+        // 닉네임 중복여부 검사
         Optional<User> found = userRepository.findByNickname(nickname);
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 닉네임입니다.");
         }
-
         // 유효성 검사
-        if (!isNicknameValid(nickname)) {
-            throw new IllegalArgumentException("닉네임은 3자 이상이어야 하며, 대소문자와 숫자로만 구성되어야 합니다.");
-        }
-
-        String password = signUpRequestDto.getPassword();
-        if (!isPasswordValid(password, nickname)) {
-            throw new IllegalArgumentException("비밀번호는 4자 이상이어야 하며, 닉네임이 포함되면 안 됩니다.");
-        }
+        nicknameValidCheck(nickname);
+        passwordValidCheck(password, nickname);
 
         String passwordCheck = signUpRequestDto.getPasswordCheck();
         if (!password.equals(passwordCheck)) {
@@ -58,9 +52,7 @@ public class UserService {
     }
 
 
-    private boolean isNicknameValid(String nickname) {
-        boolean isNicknameValid = true;
-
+    private void nicknameValidCheck(String nickname) {
         // 닉네임은 최소 3자 이상
         if (nickname.length() >= 3) {
             // 알파벳 대소문자(a~z, A~Z), 숫자(0~9)로 구성
@@ -70,30 +62,23 @@ public class UserService {
                 if (!((c >= 'a' && c <= 'z') ||
                         (c >= 'A' && c <= 'Z') ||
                         (c >= '0' && c <= '9'))) {
-                    isNicknameValid = false;
-                    break;
+                    throw new IllegalArgumentException("닉네임은 대소문자와 숫자로만 구성되어야 합니다.");
                 }
             }
-        } else {
-            isNicknameValid = false;
+        }else{
+            throw new IllegalArgumentException("닉네임은 3자 이상이어야 합니다.");
         }
-
-        return isNicknameValid;
     }
 
-    private boolean isPasswordValid(String password, String nickname) {
-        boolean isPasswordValid = true;
-
+    private void passwordValidCheck(String password, String nickname) {
         // 비밀번호는 최소 4자 이상
         if (password.length() >= 4) {
             // 닉네임과 같은 값이 포함된 경우 회원가입에 실패
             if (password.contains(nickname)) {
-                isPasswordValid = false;
+                throw new IllegalArgumentException("비밀번호에 닉네임이 포함되면 안 됩니다.");
             }
         } else {
-            isPasswordValid = false;
+            throw new IllegalArgumentException("비밀번호는 4자 이상이어야 합니다.");
         }
-
-        return isPasswordValid;
     }
 }

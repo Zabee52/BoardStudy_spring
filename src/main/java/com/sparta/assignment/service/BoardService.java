@@ -1,12 +1,10 @@
 package com.sparta.assignment.service;
 
-import com.sparta.assignment.models.Board;
 import com.sparta.assignment.dto.BoardDto;
+import com.sparta.assignment.models.Board;
 import com.sparta.assignment.repository.BoardRepository;
-import com.sparta.assignment.security.UserDetailsImpl;
 import com.sparta.assignment.security.ValidCheck;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,5 +39,11 @@ public class BoardService {
         boardDto.setAuthor(ValidCheck.cleanXSS(boardDto.getAuthor()));
 
         return boardDto;
+    }
+
+    public Board getPost(Long id) {
+        return boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("없는글임~")
+        );
     }
 }

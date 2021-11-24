@@ -52,7 +52,7 @@ public class UserController {
 
     @PostMapping("/user/signup")
     @ResponseBody
-    public String signUpProc(@RequestBody @Valid SignUpRequestDto signUpRequestDto){
+    public String signUpProc(@RequestBody SignUpRequestDto signUpRequestDto){
         String str = "";
         try{
             str = userService.signUp(signUpRequestDto);

@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/vendor/**").permitAll()
                 // 게시글 목록 및 게시글 조회는 로그인 없이 허용
                 .antMatchers("/board").permitAll()
-                .antMatchers(HttpMethod.POST, "/board/post/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/board/post/{id}").permitAll()
                 // 그 외 어떤 요청이든 '인증'
                 .anyRequest().authenticated()
                 .and()

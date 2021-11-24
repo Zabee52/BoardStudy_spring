@@ -5,7 +5,6 @@ import com.sparta.assignment.models.Board;
 import com.sparta.assignment.models.Comment;
 import com.sparta.assignment.repository.BoardRepository;
 import com.sparta.assignment.security.UserDetailsImpl;
-import com.sparta.assignment.security.ValidCheck;
 import com.sparta.assignment.service.BoardService;
 import com.sparta.assignment.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class BoardController {
         try{
             myId = userDetails.getUserId();
         }catch(Exception e){
-
         }finally{
             List<Board> list = boardRepository.findAllByOrderByModifiedAtDesc();
             model.addAttribute("myId", myId);
@@ -42,26 +40,22 @@ public class BoardController {
     @GetMapping("/board/post/{id}")
     public String post(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Board post = null;
-        // 유효하지 않은 게시글일 경우 board로
-        try{
-            post = boardRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("없는글임~")
-            );
-        }catch(IllegalArgumentException e){
-            return "redirect:/board";
-        }
-
         // 댓글 목록 불러오기
         List<Comment> comments = commentService.getComments(id);
 
         try{
+            post = boardService.getPost(id);
             Long myId = userDetails.getUserId();
             String nickname = userDetails.getUsername();
             model.addAttribute("myId", myId);
             model.addAttribute("nickname", nickname);
+        }catch(IllegalArgumentException e){
+            // 유효하지 않은 게시글일 경우 board로
+            return "redirect:/board";
         }catch(NullPointerException e){
             // userDetails에서 NullPointerException 발생시 비로그인 사용자라는 뜻.
         }
+
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
 
