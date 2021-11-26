@@ -1,34 +1,37 @@
 package com.sparta.assignment.service;
 
 import com.sparta.assignment.dto.SignUpRequestDto;
+import com.sparta.assignment.models.User;
+import com.sparta.assignment.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    List<HashMap<String, String>> mapList = new ArrayList<>();
+    @Mock
+    UserRepository userRepository;
+
     String nickname;
     String password;
     String passwordCheck;
-    String validText = "회원가입 완료";
+    SignUpRequestDto testSignUpRequestDto;
 
     @BeforeEach
     void setup() {
         nickname = "test";
         password = "1234";
         passwordCheck = "1234";
-        HashMap<String, String> map = new HashMap<>();
-        map.put("nickname", "tester");
-        map.put("password", password);
-        mapList.add(map);
+        testSignUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
     }
 
     @Test
@@ -38,24 +41,29 @@ class UserServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
 
         // when
-        List<HashMap<String, String>> result = signUp(signUpRequestDto);
+
 
         // then
-        assertEquals(2, result.size());
+        assertDoesNotThrow(() -> {
+            signUp(signUpRequestDto);
+        });
     }
 
     @Nested
     @DisplayName("Nickname Invalid case")
-    class NicknameInvalidCase{
+    class NicknameInvalidCase {
         @Test
         @DisplayName("Nickname already have")
-        void alreadyNickname(){
+        void alreadyNickname() {
             // given
-            nickname = "tester";
             SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
+            User user = new User(nickname, password);
+            when(userRepository.findByNickname(nickname)).thenReturn(Optional.of(user));
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> { signUp(signUpRequestDto); });
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                signUp(signUpRequestDto);
+            });
 
             // then
             assertEquals("중복된 닉네임입니다.", exception.getMessage());
@@ -63,13 +71,15 @@ class UserServiceTest {
 
         @Test
         @DisplayName("Nickname length < 3")
-        void shortNickname(){
+        void shortNickname() {
             // given
             nickname = "te";
             SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> { signUp(signUpRequestDto); });
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                signUp(signUpRequestDto);
+            });
 
             // then
             assertEquals("닉네임은 3자 이상이어야 합니다.", exception.getMessage());
@@ -77,13 +87,15 @@ class UserServiceTest {
 
         @Test
         @DisplayName("Not only Alphabet and Number")
-        void weirdNickname(){
+        void weirdNickname() {
             // given
             nickname = "test@";
             SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> { signUp(signUpRequestDto); });
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                signUp(signUpRequestDto);
+            });
 
             // then
             assertEquals("닉네임은 대소문자와 숫자로만 구성되어야 합니다.", exception.getMessage());
@@ -92,16 +104,18 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("Password Invalid case")
-    class PasswordInvalidCase{
+    class PasswordInvalidCase {
         @Test
         @DisplayName("Password length < 4")
-        void shortPassword(){
+        void shortPassword() {
             // given
             password = "123";
             SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> { signUp(signUpRequestDto); });
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                signUp(signUpRequestDto);
+            });
 
             // then
             assertEquals("비밀번호는 4자 이상이어야 합니다.", exception.getMessage());
@@ -109,13 +123,15 @@ class UserServiceTest {
 
         @Test
         @DisplayName("Password in nickname")
-        void passwordInNickname(){
+        void passwordInNickname() {
             // given
             password = "test1234";
             SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> { signUp(signUpRequestDto); });
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                signUp(signUpRequestDto);
+            });
 
             // then
             assertEquals("비밀번호에 닉네임이 포함되면 안 됩니다.", exception.getMessage());
@@ -124,34 +140,35 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("PasswordCheck Invalid case")
-    class PasswordCheckInvalidCase{
+    class PasswordCheckInvalidCase {
         @Test
         @DisplayName("Password and PasswordCheck is not equal")
-        void passwordCheckIsNotEqual(){
+        void passwordCheckIsNotEqual() {
             // given
             passwordCheck = "123";
             SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, password, passwordCheck);
 
             // when
-            Exception exception = assertThrows(IllegalArgumentException.class, () -> { signUp(signUpRequestDto); });
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                signUp(signUpRequestDto);
+            });
 
             // then
             assertEquals("비밀번호와 비밀번호 확인란의 값이 다릅니다.", exception.getMessage());
         }
     }
 
-    public List<HashMap<String, String>> signUp(SignUpRequestDto signUpRequestDto) {
+    public String signUp(SignUpRequestDto signUpRequestDto) {
         // 회원가입 작업
         // return message
         String nickname = signUpRequestDto.getNickname();
         String password = signUpRequestDto.getPassword();
 
-        for(HashMap<String, String> map : mapList){
-            if(map.get("nickname").equals(nickname)){
-                throw new IllegalArgumentException("중복된 닉네임입니다.");
-            }
+        // 닉네임 중복여부 검사
+        Optional<User> found = userRepository.findByNickname(nickname);
+        if (found.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임입니다.");
         }
-
         // 유효성 검사
         nicknameValidCheck(nickname);
         passwordValidCheck(password, nickname);
@@ -161,11 +178,7 @@ class UserServiceTest {
             throw new IllegalArgumentException("비밀번호와 비밀번호 확인란의 값이 다릅니다.");
         }
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("nickname", nickname);
-        map.put("password", password);
-        mapList.add(map);
-        return mapList;
+        return "회원가입 완료";
     }
 
     private void nicknameValidCheck(String nickname) {
@@ -181,7 +194,7 @@ class UserServiceTest {
                     throw new IllegalArgumentException("닉네임은 대소문자와 숫자로만 구성되어야 합니다.");
                 }
             }
-        }else{
+        } else {
             throw new IllegalArgumentException("닉네임은 3자 이상이어야 합니다.");
         }
     }

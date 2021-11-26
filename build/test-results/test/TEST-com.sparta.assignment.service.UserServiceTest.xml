@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.sparta.assignment.service.UserServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-11-24T17:06:26" hostname="DESKTOP-2SS4HM6" time="0.003">
+<testsuite name="com.sparta.assignment.service.UserServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-11-26T13:41:20" hostname="DESKTOP-2SS4HM6" time="0.094">
   <properties/>
-  <testcase name="Complete case" classname="com.sparta.assignment.service.UserServiceTest" time="0.003"/>
+  <testcase name="Complete case" classname="com.sparta.assignment.service.UserServiceTest" time="0.094"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
