@@ -7,6 +7,7 @@ import com.sparta.assignment.repository.BoardRepository;
 import com.sparta.assignment.security.UserDetailsImpl;
 import com.sparta.assignment.service.BoardService;
 import com.sparta.assignment.service.CommentService;
+import com.sparta.assignment.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +23,7 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardRepository boardRepository;
     private final CommentService commentService;
+    private final LikeService likeService;
 
     @GetMapping("/board")
     public String postList(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -42,18 +44,21 @@ public class BoardController {
         Board post = null;
         // 댓글 목록 불러오기
         List<Comment> comments = commentService.getComments(id);
+        boolean isLike = false;
 
         try{
             post = boardService.getPost(id);
-            Long myId = userDetails.getUserId();
-            String nickname = userDetails.getUsername();
-            model.addAttribute("myId", myId);
-            model.addAttribute("nickname", nickname);
-        }catch(IllegalArgumentException e){
+            if(userDetails != null){
+                Long myId = userDetails.getUserId();
+                String nickname = userDetails.getUsername();
+                model.addAttribute("myId", myId);
+                model.addAttribute("nickname", nickname);
+                isLike = likeService.isLike(post.getId(), myId);
+                model.addAttribute("isLike", isLike);
+            }
+        }catch(IllegalArgumentException e) {
             // 유효하지 않은 게시글일 경우 board로
             return "redirect:/board";
-        }catch(NullPointerException e){
-            // userDetails에서 NullPointerException 발생시 비로그인 사용자라는 뜻.
         }
 
         model.addAttribute("post", post);

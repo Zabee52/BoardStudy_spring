@@ -26,6 +26,7 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+
     public Comment(CommentDto commentDto) {
         this.postId = commentDto.getPostId();
         this.userId = commentDto.getUserId();

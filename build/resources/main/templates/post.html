@@ -95,6 +95,29 @@
             }
         }
 
+        function like(id){
+            /*<![CDATA[*/
+            let myId = /*[[ ${myId} ]]*/null;
+            /*]]*/
+
+            if (!myId) {
+                alert("로그인이 필요한 기능입니다.");
+                window.location.href = "/user/login?needlogin";
+            }
+
+            let data = {'postId': id, 'userId': myId};
+
+            $.ajax({
+                type: 'POST',
+                url: '/board/post/like',
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function () {
+                    window.location.reload();
+                }
+            })
+        }
+
         function showModify(commentId) {
             $('#comment-p-' + commentId).addClass('non-display');
             $('#modify-' + commentId).addClass('non-display');
@@ -132,6 +155,15 @@
         .non-display {
             display: none;
         }
+
+        .content-bottom{
+            display: grid;
+            grid-template-columns: 50% 50%;
+        }
+
+        .likeBtn{
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -150,11 +182,33 @@
                        font-weight: bold">작성자명</h6>
             <p th:text="${post.content}"
                class="card-text">내용</p>
-            <p class="card-text" style="text-align:right;">
-                <a onclick="location.href='/board'"
-                   class="btn btn-primary"
-                   style="color:white;">목록</a>
-            </p>
+            <div class="content-bottom">
+                <div class="item" style="text-align: left">
+                    <img th:if="!${isLike}"
+                         id="not-like"
+                         class="likeBtn"
+                         src="/images/Favorite_n.png"
+                         alt="좋아요"
+                         th:onclick="'like('+${post.id}+')'"/>
+                    <img th:if="${isLike}"
+                         id="like"
+                         class="likeBtn"
+                         src="/images/Favorite_y.png"
+                         alt="좋아요"
+                         th:onclick="'like('+${post.id}+')'"/>
+                    <span th:text="${post.likeCnt}"
+                          style="font-size: 24px; font-weight: bold;">
+                        0
+                    </span>
+                </div>
+                <div class="item">
+                    <p class="card-text" style="text-align:right;">
+                        <a onclick="location.href='/board'"
+                           class="btn btn-primary"
+                           style="color:white;">목록</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="input-group mb-3">

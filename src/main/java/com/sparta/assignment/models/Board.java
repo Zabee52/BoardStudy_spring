@@ -24,15 +24,24 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private int likeCnt;
+
     public Board(BoardDto boardDto){
         this.title = boardDto.getTitle();
         this.author = boardDto.getAuthor();
         this.content = boardDto.getContent();
+        this.likeCnt = 0;
     }
 
     public void update(BoardDto boardDto){
         this.title = boardDto.getTitle();
         this.author = boardDto.getAuthor();
         this.content = boardDto.getContent();
+        this.likeCnt = 0;
+    }
+
+    public void setLikeCnt(int likeCnt) {
+        this.likeCnt = likeCnt;
     }
 }
