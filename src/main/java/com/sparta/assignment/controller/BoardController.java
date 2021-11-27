@@ -28,14 +28,13 @@ public class BoardController {
     @GetMapping("/board")
     public String postList(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long myId = Long.parseLong("-1");
-        try{
+        if(userDetails != null){
             myId = userDetails.getUserId();
-        }catch(Exception e){
-        }finally{
-            List<Board> list = boardRepository.findAllByOrderByModifiedAtDesc();
-            model.addAttribute("myId", myId);
-            model.addAttribute("posts", list);
         }
+
+        List<Board> list = boardRepository.findAllByOrderByModifiedAtDesc();
+        model.addAttribute("myId", myId);
+        model.addAttribute("posts", list);
         return "board";
     }
 

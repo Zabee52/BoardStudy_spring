@@ -18,11 +18,10 @@ public class UserController {
 
     @GetMapping("/user/login")
     public String loginPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        try{
-            userDetails.getUserId();
-            //userDetails.getUserId가 문제가 발생하지 않았다 = 현재 로그인한 상태라는 뜻. board로 이동
+        // userDetails가 null이 아니다 = 로그인한 상태라는 뜻.
+        if(userDetails != null){
             return "redirect:/board?login";
-        }catch(Exception e){
+        }else{
             return "login";
         }
     }
@@ -39,11 +38,9 @@ public class UserController {
 
     @GetMapping("/user/signup")
     public String signUpPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        try{
-            userDetails.getUserId();
-            //userDetails.getUserId가 문제가 발생하지 않았다 = 현재 로그인한 상태라는 뜻. board로 이동
+        if(userDetails!=null){
             return "redirect:/board?login";
-        }catch(Exception e) {
+        }else{
             return "signup";
         }
     }
